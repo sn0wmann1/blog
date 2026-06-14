@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { SITE } from "../consts";
+import "../styles/global.css";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  collection?: CollectionEntry<"blog">[];
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title ? `${title} — ${SITE.title}` : SITE.title}</title>
+    <meta name="description" content={description || SITE.description} />
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = await getCollection("blog");
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="blog">
+  <header>
+    <h1>snow</h1>
+    <p class="tagline">personal blog — projects, notes, and experiments</p>
+  </header>
+
+  <ul class="posts">
+    {posts.map((post) => (
+      <li>
+        <article>
+          <time datetime={post.data.pubDate.toISOString()}>
+            {post.data.pubDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+          </time>
+          <h2><a href={`${import.meta.env.BASE_URL}${post.id}/`}>{post.data.title}</a></h2>
+          <p>{post.data.description}</p>
+        </article>
+      </li>
+    ))}
+  </ul>
+
+  <footer>
+    <a href="https://github.com/sn0wmann1">github</a>
+  </footer>
+</BaseLayout>
+
+<style>
+  header { padding: 4rem 0 2rem; }
+  h1 { font-size: 2.5rem; margin: 0; }
+  .tagline { color: #888; margin-top: 0.3rem; }
+  .posts { list-style: none; padding: 0; }
+  .posts li { margin-bottom: 1.5rem; }
+  time { font-size: 0.85rem; color: #666; }
+  h2 { margin: 0.3rem 0; font-size: 1.1rem; }
+  h2 a { color: #58a6ff; text-decoration: none; }
+  h2 a:hover { text-decoration: underline; }
+  p { margin: 0; color: #888; font-size: 0.9rem; }
+  footer { margin-top: 3rem; padding: 1rem 0; }
+  a { color: #58a6ff; }
+</style>

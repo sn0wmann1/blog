@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: post,
+  }));
+}
+
+const post = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <header>
+    <a href={import.meta.env.BASE_URL}>← blog</a>
+    <h1>{post.data.title}</h1>
+    <time>
+      {post.data.pubDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+      {post.data.updatedDate && <> · updated {post.data.updatedDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</>}
+    </time>
+  </header>
+  <article>
+    <Content />
+  </article>
+</BaseLayout>
+
+<style>
+  header { padding: 2rem 0 1rem; }
+  h1 { font-size: 1.8rem; margin: 0.5rem 0; }
+  time { font-size: 0.85rem; color: #666; }
+  article { line-height: 1.7; }
+  article :global(h2) { margin-top: 2rem; }
+  article :global(pre) { background: #111; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+  article :global(code) { font-size: 0.9rem; }
+  article :global(img) { max-width: 100%; border-radius: 6px; }
+  a { color: #58a6ff; }
+</style>
